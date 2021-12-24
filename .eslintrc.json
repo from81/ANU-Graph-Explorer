@@ -1,35 +1,35 @@
-// {
-//   "env": {
-//     "browser": true,
-//     "es6": true,
-//     "node": true
-//   },
-//   "extends": [
-//     "eslint:recommended",
-//     "plugin:react/recommended",
-//     "plugin:prettier/recommended"
-//   ],
-//   "globals": {
-//     "Atomics": "readonly",
-//     "SharedArrayBuffer": "readonly"
-//   },
-//   "parserOptions": {
-//     "ecmaFeatures": {
-//       "jsx": true
-//     },
-//     "ecmaVersion": 11,
-//     "sourceType": "module"
-//   },
-//   "plugins": ["react", "prettier"],
-//   "settings": {
-//     "react": {
-//       "pragma": "React", // FWIW, I tried without as well.
-//       "version": "detect" // Tried with explicit version number as well.
-//     }
-//   },
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "prettier"],
+  "settings": {
+    "react": {
+      "pragma": "React", // FWIW, I tried without as well.
+      "version": "detect" // Tried with explicit version number as well.
+    }
+  },
 
-//   "rules": {
-//     "prettier/prettier": "error",
-//     "react/prop-types": "off"
-//   }
-// }
+  "rules": {
+    "prettier/prettier": "error",
+    "react/prop-types": "off"
+  }
+}

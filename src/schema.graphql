@@ -16,13 +16,14 @@ type Course {
   course_number: Int
   units: Int
   description: String
-  prerequisites_raw: String,
-  prerequisites: [Course] @relationship(type: "PREREQUISITE", properties: "Prerequisite", direction: OUT)
   subject: String
   college: String
   offered_by: String
   academic_career: String
   co_taught: String
+  prerequisites_raw: String,
+  prerequisites: [Course] @relationship(type: "PREREQUISITE", properties: "Prerequisite", direction: OUT)
+  unlocks: [Course] @relationship(type: "PREREQUISITE", properties: "Prerequisite", direction: IN)
 }
 
 type Requirement {

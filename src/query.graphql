@@ -6,21 +6,19 @@
     course_number
     units
     description
-    prerequisites_raw
     subject
     college
     offered_by
     academic_career
     co_taught
+    prerequisites_raw
     prerequisites {
       id
       name
-      description
     }
-    prerequisiteClasses {
+    unlocks {
       id
       name
-      description
     }
   }
 }
