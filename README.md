@@ -16,7 +16,8 @@ npm start
 
 This will start the GraphQL service (by default on localhost:4000) where you can issue GraphQL requests or access GraphQL Playground in the browser:
 
-![GraphQL Playground](img/graphql-playground.png)
+![GraphQL Playground1](img/img1.jpg)
+![GraphQL Playground2](img/img2.jpg)
 
 ## Configure
 
