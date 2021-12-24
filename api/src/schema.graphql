@@ -1,0 +1,63 @@
+scalar Point
+scalar DateTime
+scalar PointInput
+
+# Relationship properties currently not available
+# https://github.com/neo4j/graphql/pull/193
+# interface Prerequisite @relationshipProperties {
+#   id: String
+#   description: String
+# }
+
+type Course {
+  id: ID
+  name: String
+  subject_code: String
+  course_number: Int
+  units: Int
+  description: String
+  prerequisites_raw: String,
+  prerequisites: [Course] @relationship(type: "PREREQUISITE", properties: "Prerequisite", direction: OUT)
+  prerequisiteClasses: [Course]
+    @cypher(statement: "MATCH (this)-[:PREREQUISITE]->(rec:Course) WHERE rec.id IS NOT NULL RETURN rec")
+  subject: String
+  college: String
+  offered_by: String
+  academic_career: String
+  co_taught: String
+}
+
+type Specialisation {
+  id: ID!
+  name: String
+  type: String
+  units: Int
+  # requirements: [Course] @relationship(type: "REQUIREMENT", direction: OUT)
+  requirements: [Course] 
+    @cypher(statement: "MATCH (this)-[:REQUIREMENT]->(rec:Course) WHERE rec.id IS NOT NULL RETURN rec")
+}
+
+union RequirementItem = Course | Specialisation
+
+type Requirement {
+  units: Int
+  description: String
+  items: [RequirementItem]
+    @cypher(
+      statement: "MATCH (this)-[*1]->(req:Course:Specialisation) RETURN req"
+    )
+}
+
+type Program {
+  id: ID!
+  name: String
+  units: Int
+  specialisations: [Specialisation]
+    @cypher(
+      statement: "MATCH (this)-[:PREREQUISITE]->(spec:Specialisation) RETURN spec"
+    )
+  requirements: [Requirement]
+    @cypher(
+      statement: "MATCH (this)-[:REQUIREMENT]->(c:Class) RETURN req"
+    )
+}
