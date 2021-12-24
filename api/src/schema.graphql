@@ -18,8 +18,6 @@ type Course {
   description: String
   prerequisites_raw: String,
   prerequisites: [Course] @relationship(type: "PREREQUISITE", properties: "Prerequisite", direction: OUT)
-  prerequisiteClasses: [Course]
-    @cypher(statement: "MATCH (this)-[:PREREQUISITE]->(rec:Course) WHERE rec.id IS NOT NULL RETURN rec")
   subject: String
   college: String
   offered_by: String
@@ -27,37 +25,36 @@ type Course {
   co_taught: String
 }
 
-type Specialisation {
-  id: ID!
-  name: String
-  type: String
-  units: Int
-  # requirements: [Course] @relationship(type: "REQUIREMENT", direction: OUT)
-  requirements: [Course] 
-    @cypher(statement: "MATCH (this)-[:REQUIREMENT]->(rec:Course) WHERE rec.id IS NOT NULL RETURN rec")
-}
-
-union RequirementItem = Course | Specialisation
-
 type Requirement {
   units: Int
   description: String
-  items: [RequirementItem]
+  requirements: [Requirement]
+    @relationship(type: "REQUIREMENT", direction: OUT)
+  classes: [Course]
+    @relationship(type: "REQUIREMENT", direction: OUT)
+  specialisations: [Specialisation]
+    @relationship(type: "REQUIREMENT", direction: OUT)
+}
+
+type Specialisation {
+  id: ID
+  name: String
+  type: String
+  units: Int
+  requirements: [Requirement] @relationship(type: "REQUIREMENT", direction: OUT)
+  classes: [Course]
     @cypher(
-      statement: "MATCH (this)-[*1]->(req:Course:Specialisation) RETURN req"
+      statement: "MATCH (this)-[:REQUIREMENT*..5]->(s:Course) RETURN s"
     )
 }
 
 type Program {
-  id: ID!
+  id: ID
   name: String
   units: Int
-  specialisations: [Specialisation]
+  requirements: [Requirement] @relationship(type: "REQUIREMENT", direction: OUT)
+  specialisations: [Specialisation] 
     @cypher(
-      statement: "MATCH (this)-[:PREREQUISITE]->(spec:Specialisation) RETURN spec"
-    )
-  requirements: [Requirement]
-    @cypher(
-      statement: "MATCH (this)-[:REQUIREMENT]->(c:Class) RETURN req"
+      statement: "MATCH (this)-[*..5]->(s:Specialisation) RETURN s"
     )
 }

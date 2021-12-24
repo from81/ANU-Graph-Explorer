@@ -1,0 +1,119 @@
+{
+  courses(where: {id:"COMP6442"}) {
+    id
+    name
+    subject_code
+    course_number
+    units
+    description
+    prerequisites_raw
+    subject
+    college
+    offered_by
+    academic_career
+    co_taught
+    prerequisites {
+      id
+      name
+      description
+    }
+    prerequisiteClasses {
+      id
+      name
+      description
+    }
+  }
+}
+
+{
+  specialisations {
+    id 
+    name 
+    type
+    units
+    classes {
+      id
+      name
+      units
+    }
+    requirements {
+      units
+      description
+      requirements {
+        units
+        description
+        requirements {
+          units
+          description
+          requirements {
+            units
+            description
+          }
+        }
+      }
+      classes {
+        id
+        name
+        units
+      }
+    }
+  }
+}
+
+{
+  programs(where: {name:"Bachelor of Commerce"}) {
+    id 
+    name 
+    units
+    requirements {
+        units
+        description
+      }
+    specialisations {
+      id
+      name
+      units
+    }
+  }
+}
+
+{
+  programs(where: {name:"Bachelor of Commerce"}) {
+    id 
+    name 
+    units
+    requirements {
+        units
+        description
+      	classes {
+          id
+          name
+        }
+      	specialisations {
+          id
+          name
+        }
+      	requirements {
+          units
+          description
+          classes {
+            id
+            name
+          }
+          specialisations {
+            id
+            name
+          }
+          requirements {
+            units
+            description
+          }
+        }
+      }
+    specialisations {
+      id
+      name
+      units
+    }
+  }
+}
