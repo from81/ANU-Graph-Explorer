@@ -1,0 +1,26 @@
+# serverless.yml
+org: from81
+app: anu-graphql
+service: serverless-graphql
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-southeast-2
+functions:
+  graphql:
+    # this is formatted as <FILENAME>.<HANDLER>
+    handler: .src/graphql.graphqlHandler
+    environment:
+      NEO4J_URI: ${param:NEO4J_URI}
+      NEO4J_USER: 'neo4j'
+      NEO4J_PASSWORD: ${param:NEO4J_PASSWORD}
+    events:
+      - http:
+          path: /
+          method: post
+          cors: true
+      - http:
+          path: /
+          method: get
+          cors: true

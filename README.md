@@ -58,3 +58,9 @@ Optionally you can seed the GraphQL service by executing mutations that will wri
 ```
 npm run seedDb
 ```
+
+## snippets
+
+```
+curl -G --url 'http://ec2-3-26-165-14.ap-southeast-2.compute.amazonaws.com/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' --data-urlencode 'query={ courses(where: {id:"COMP2100"}) { id name subject_code course_number units description subject college offered_by academic_career co_taught prerequisites_raw prerequisites { id name } unlocks { id name } } }'
+```

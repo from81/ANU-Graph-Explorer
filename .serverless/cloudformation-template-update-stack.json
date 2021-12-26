@@ -74,7 +74,7 @@
     "GraphqlLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/apollo-lambda-dev-graphql"
+        "LogGroupName": "/aws/lambda/serverless-graphql-dev-graphql"
       }
     },
     "IamRoleLambdaExecution": {
@@ -102,7 +102,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "apollo-lambda",
+                  "serverless-graphql",
                   "dev",
                   "lambda"
                 ]
@@ -119,7 +119,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/apollo-lambda-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-graphql-dev*:*"
                     }
                   ]
                 },
@@ -130,7 +130,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/apollo-lambda-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-graphql-dev*:*:*"
                     }
                   ]
                 }
@@ -143,7 +143,7 @@
           "Fn::Join": [
             "-",
             [
-              "apollo-lambda",
+              "serverless-graphql",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -154,6 +154,52 @@
         }
       }
     },
+    "EnterpriseLogAccessIamRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "arn:aws:iam::802587217904:root"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": "ServerlessEnterprise-74e86231-aa87-47ef-b3aa-03b6c829b6b3"
+                }
+              }
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "LogFilterAccess",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:FilterLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "GraphqlLogGroup",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "GraphqlLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -161,13 +207,20 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/apollo-lambda/dev/1640416933527-2021-12-25T07:22:13.527Z/apollo-lambda.zip"
+          "S3Key": "serverless/serverless-graphql/dev/1640534822434-2021-12-26T16:07:02.434Z/serverless-graphql.zip"
         },
-        "Handler": "graphql.handler",
-        "Runtime": "nodejs14.x",
-        "FunctionName": "apollo-lambda-dev-graphql",
+        "Handler": "s_graphql.handler",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-graphql-dev-graphql",
         "MemorySize": 1024,
         "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "NEO4J_URI": "neo4j+s://f2c1d80b.databases.neo4j.io",
+            "NEO4J_USER": "neo4j",
+            "NEO4J_PASSWORD": "KrRsKLC26qhHSdj4PG_qRso98GdyDbZOTQrdvvZPr8Q"
+          }
+        },
         "Role": {
           "Fn::GetAtt": [
             "IamRoleLambdaExecution",
@@ -179,20 +232,20 @@
         "GraphqlLogGroup"
       ]
     },
-    "GraphqlLambdaVersion0E3gOALak56QM0ZouQMHOphOiqClX8urgSILBQS6w4": {
+    "GraphqlLambdaVersionXOi36cxoHT1qem2utXSJaAL6XPrhtjfyggXz7sMaCE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "YZeVYXoV8tuONyF6wn6BgxSUfZl8Ay5Gb/aLcKXvwNU="
+        "CodeSha256": "XHL9ju4D5Y668SAZKWWPm8mO9qaBEw7KpiFecg9Q2yM="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-apollo-lambda",
+        "Name": "dev-serverless-graphql",
         "EndpointConfiguration": {
           "Types": [
             "EDGE"
@@ -347,7 +400,7 @@
         "GraphqlLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1640416925029": {
+    "ApiGatewayDeployment1640534813160": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -397,6 +450,153 @@
           ]
         }
       }
+    },
+    "ApiGatewayLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/api-gateway/serverless-graphql-dev"
+      }
+    },
+    "CustomApiGatewayAccountCloudWatchRole": {
+      "Type": "Custom::ApiGatewayAccountRole",
+      "Version": 1,
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomDashresourceDashapigwDashcwDashroleLambdaFunction",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "IamRoleCustomResourcesLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "dev",
+                  "serverless-graphql",
+                  "custom-resources-lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "iam:",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        "role/*"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "iam:AttachRolePolicy",
+                    "iam:CreateRole",
+                    "iam:ListAttachedRolePolicies",
+                    "iam:PassRole"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "apigateway:*::/account"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "apigateway:GET",
+                    "apigateway:PATCH"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CustomDashresourceDashapigwDashcwDashroleLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-graphql/dev/1640534822434-2021-12-26T16:07:02.434Z/custom-resources.zip"
+        },
+        "FunctionName": "serverless-graphql-dev-custom-resource-apigw-cw-role",
+        "Handler": "apiGatewayCloudWatchRole/handler.handler",
+        "MemorySize": 1024,
+        "Runtime": "nodejs12.x",
+        "Timeout": 180,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleCustomResourcesLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "IamRoleCustomResourcesLambdaExecution"
+      ]
+    },
+    "CWLSubFilterGraphqlLogGroupApSoutheast2": {
+      "Type": "AWS::Logs::SubscriptionFilter",
+      "Properties": {
+        "DestinationArn": "arn:aws:logs:ap-southeast-2:802587217904:destination:74e86231-aa87-47ef-b3aa-03b6c829b6b3#3R6Z9KrMRlt3WfJzMY#serverless-graphql#dev",
+        "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+        "LogGroupName": {
+          "Ref": "GraphqlLogGroup"
+        }
+      }
+    },
+    "CWLSubFilterApiGatewayLogGroupApSoutheast2": {
+      "Type": "AWS::Logs::SubscriptionFilter",
+      "Properties": {
+        "DestinationArn": "arn:aws:logs:ap-southeast-2:802587217904:destination:74e86231-aa87-47ef-b3aa-03b6c829b6b3#3R6Z9KrMRlt3WfJzMY#serverless-graphql#dev",
+        "FilterPattern": "\"SLS_ACCESS_LOG\"",
+        "LogGroupName": {
+          "Ref": "ApiGatewayLogGroup"
+        }
+      }
     }
   },
   "Outputs": {
@@ -405,16 +605,27 @@
         "Ref": "ServerlessDeploymentBucket"
       },
       "Export": {
-        "Name": "sls-apollo-lambda-dev-ServerlessDeploymentBucketName"
+        "Name": "sls-serverless-graphql-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "EnterpriseLogAccessIamRole": {
+      "Value": {
+        "Fn::GetAtt": [
+          "EnterpriseLogAccessIamRole",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "sls-serverless-graphql-dev-EnterpriseLogAccessIamRole"
       }
     },
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersion0E3gOALak56QM0ZouQMHOphOiqClX8urgSILBQS6w4"
+        "Ref": "GraphqlLambdaVersionXOi36cxoHT1qem2utXSJaAL6XPrhtjfyggXz7sMaCE"
       },
       "Export": {
-        "Name": "sls-apollo-lambda-dev-GraphqlLambdaFunctionQualifiedArn"
+        "Name": "sls-serverless-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {
@@ -440,7 +651,7 @@
         ]
       },
       "Export": {
-        "Name": "sls-apollo-lambda-dev-ServiceEndpoint"
+        "Name": "sls-serverless-graphql-dev-ServiceEndpoint"
       }
     }
   }
