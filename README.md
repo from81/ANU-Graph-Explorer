@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```
-ssh -i anugraph.pem ubuntu@ec2-3-26-165-14.ap-southeast-2.compute.amazonaws.com
+ssh -i anugraph.pem ubuntu@ec2-xxxxxxxxxx.ap-southeast-2.compute.amazonaws.com
 git clone https://github.com/from81/ANU-GraphQL.git
 cd ANU-GraphQL
 ./setup.sh
@@ -17,7 +17,7 @@ This will start the GraphQL service (by default on localhost:4000) where you can
 To test the Graph API,
 
 ```
-curl -G --url 's' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' --data-urlencode 'query={ courses(where: {id:"COMP2100"}) { id name subject_code course_number units description subject college offered_by academic_career co_taught prerequisites_raw prerequisites { id name } unlocks { id name } } }'
+curl -G --url '<URL>' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' --data-urlencode 'query={ courses(where: {id:"COMP2100"}) { id name subject_code course_number units description subject college offered_by academic_career co_taught prerequisites_raw prerequisites { id name } unlocks { id name } } }'
 ```
 
 ## Configure
