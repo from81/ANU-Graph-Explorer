@@ -1,4 +1,6 @@
-# GRANDstack Starter - GraphQL API
+# ANU Programs and Courses Graph API (Unofficial)
+
+Graph API Endpoint / GraphQL Playground [Link](http://ec2-3-26-165-14.ap-southeast-2.compute.amazonaws.com/graphql)
 
 ## Quick Start
 
