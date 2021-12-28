@@ -58,4 +58,8 @@ type Program {
     @cypher(
       statement: "MATCH (this)-[*..5]->(s:Specialisation) RETURN s"
     )
+  classes: [Course]
+    @cypher(
+      statement: "MATCH (this)-[:REQUIREMENT*..5]->(s:Course) RETURN s"
+    )
 }
