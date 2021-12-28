@@ -2,6 +2,8 @@
 
 Graph API Endpoint / GraphQL Playground [Link](http://ec2-3-26-165-14.ap-southeast-2.compute.amazonaws.com/graphql)
 
+See [this file](src/query.graphql) for sample queries.
+
 ## Quick Start
 
 ```
