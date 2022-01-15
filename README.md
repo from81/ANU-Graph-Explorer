@@ -24,6 +24,13 @@ To test the Graph API,
 curl -G --url '<URL>' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' --data-urlencode 'query={ courses(where: {id:"COMP2100"}) { id name subject_code course_number units description subject college offered_by academic_career co_taught prerequisites_raw prerequisites { id name } unlocks { id name } } }'
 ```
 
+To use Docker:
+```
+docker build -t anu_graph .
+docker container run -it --env-file .env --publish 80:80 --name graph anu_graph
+```
+Then go to `localhost/graphql`
+
 ## Configure
 
 Set your Neo4j connection string and credentials in `.env`. For example:

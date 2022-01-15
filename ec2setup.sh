@@ -7,9 +7,9 @@ nvm install node
 # test
 node -e "console.log('Running Node.js ' + process.version)"
 
+npm run build
 npm install
-# npm install graphql@^15.0.0
-# npm start
+npm prune
 
 sudo npm i -g pm2
 pm2 start build/index.js
